@@ -37,23 +37,23 @@ from django.contrib.auth import login, logout
 class PostFavoriteView(APIView):
     bad_request_message = 'An error has occurred'
 
-    def get(self, request):
-        queryset = Post.objects.all()
-        serializer_class = PostSerializer
-        permission_classes = [permissions.IsAuthenticatedOrReadOnly,
-                              IsOwnerOrReadOnly]
+    # def get(self, request):
+    #     queryset = Post.objects.all()
+    #     serializer_class = PostSerializer
+    #     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+    #                           IsOwnerOrReadOnly]
 
-    def post(self, request):
+    def post(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
-        if request.user not in post.favourite.all():
-            post.favourite.add(request.user)
+        if request.user not in post.favorite.all():
+            post.favorite.add(request.user)
             return Response({'detail': 'User added to post'}, status=status.HTTP_200_OK)
         return Response({'detail': self.bad_request_message}, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request):
+    def delete(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
-        if request.user in post.favourite.all():
-            post.favourite.remove(request.user)
+        if request.user in post.favorite.all():
+            post.favorite.remove(request.user)
             return Response({'detail': 'User removed from post'}, status=status.HTTP_204_NO_CONTENT)
         return Response({'detail': self.bad_request_message}, status=status.HTTP_400_BAD_REQUEST)
 

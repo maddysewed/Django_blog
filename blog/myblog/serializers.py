@@ -86,11 +86,11 @@ class ProfileSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='user.username')
     #tag = serializers.ReadOnlyField(source='tag.name')
-    favorites = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    #favorite = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'date', 'tag', 'author', 'favorites']
+        fields = ['id', 'title', 'content', 'date', 'tag', 'author', 'favorite']
 
 
 class TagSerializer(serializers.ModelSerializer):
