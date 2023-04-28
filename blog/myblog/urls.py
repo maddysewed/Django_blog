@@ -6,7 +6,6 @@ from .views import *
 #app_name = 'myblog'
 
 urlpatterns = [
-    #path('', index, name="home"),
     path('users/', UserList.as_view()),
     path('users/<int:pk>/', UserDetail.as_view()),
     path('users/<int:pk>/profile', UserProfileDetail.as_view()),

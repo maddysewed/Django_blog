@@ -21,12 +21,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-        return User.objects.create_user(
-            validated_data['username'],
-            validated_data['email'],
-            validated_data['password'],
-            validated_data['profile'],
-        )
+        return User.objects.create_user(**validated_data)
 
     # метод update определён в базовом классе
 
@@ -85,8 +80,6 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='user.username')
-    #tag = serializers.ReadOnlyField(source='tag.name')
-    #favorite = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Post

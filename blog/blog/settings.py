@@ -14,6 +14,11 @@ import os.path
 from pathlib import Path
 from datetime import timedelta
 
+import dotenv
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,7 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'myblog.apps.MyblogConfig',
     'rest_framework',
+    'rest_framework.authtoken',
     'rest_framework_simplejwt',
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -115,6 +122,7 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
@@ -124,6 +132,115 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ]
 }
+
+DJOSER = {
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': 'auth/activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    'SERIALIZERS': {},
+}
+
+# REST_REGISTRATION = {
+#     #'REGISTER_VERIFICATION_URL': 'https://frontend-host/verify-user/',
+#     #'RESET_PASSWORD_VERIFICATION_URL': 'https://frontend-host/reset-password/',
+#     #'REGISTER_EMAIL_VERIFICATION_URL': 'https://frontend-host/verify-email/',
+#
+#     'VERIFICATION_FROM_EMAIL': 'blogmail@gmail.com',
+# }
+#
+# DRF_REGISTRATION = {
+#
+#     # General settings
+#     'PROJECT_NAME': 'DRF Registration',
+#     'PROJECT_BASE_URL': '',
+#
+#     # User fields to register and response to profile
+#     'USER_FIELDS': (
+#         'id',
+#         'username',
+#         'gender',
+#         'email',
+#         'password',
+#         'is_active',
+#     ),
+#     'USER_READ_ONLY_FIELDS': (
+#         'is_superuser',
+#         'is_staff',
+#         'is_active',
+#     ),
+#     'USER_WRITE_ONLY_FIELDS': (
+#         'username',
+#         'password',
+#     ),
+#
+#     'USER_SERIALIZER': 'drf_registration.api.user.UserSerializer',
+#
+#     # User verify field
+#     'USER_VERIFY_FIELD': 'is_active',
+#
+#     # Activate user by token sent to email
+#     'USER_ACTIVATE_TOKEN_ENABLED': True,
+#     'USER_ACTIVATE_SUCCESS_TEMPLATE': '',
+#     'USER_ACTIVATE_FAILED_TEMPLATE': '',
+#     'USER_ACTIVATE_EMAIL_SUBJECT': 'Activate your account',
+#     'USER_ACTIVATE_EMAIL_TEMPLATE': '',
+#
+#     # Profile
+#     'PROFILE_SERIALIZER': 'drf_registration.api.profile.ProfileSerializer',
+#     'PROFILE_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.IsAuthenticated',
+#     ],
+#
+#     # Register
+#     'REGISTER_SERIALIZER': 'drf_registration.api.register.RegisterSerializer',
+#     'REGISTER_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.AllowAny',
+#     ],
+#     'REGISTER_SEND_WELCOME_EMAIL_ENABLED': True,
+#         'REGISTER_SEND_WELCOME_EMAIL_SUBJECT': 'Welcome to the B L O G',
+#     'REGISTER_SEND_WELCOME_EMAIL_TEMPLATE': '',
+#
+#     # Login
+#     'LOGIN_SERIALIZER': 'drf_registration.api.login.LoginSerializer',
+#     'LOGIN_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.AllowAny',
+#     ],
+#
+#     # For custom login username fields
+#     'LOGIN_USERNAME_FIELDS': ['username', 'email',],
+#
+#     'LOGOUT_REMOVE_TOKEN': False,
+#
+#     # Change password
+#     'CHANGE_PASSWORD_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.IsAuthenticated',
+#     ],
+#     'CHANGE_PASSWORD_SERIALIZER': 'drf_registration.api.change_password.ChangePasswordSerializer',
+#
+#     # Reset password
+#     'RESET_PASSWORD_ENABLED': True,
+#     'RESET_PASSWORD_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.AllowAny',
+#     ],
+#     'RESET_PASSWORD_SERIALIZER': 'drf_registration.api.reset_password.ResetPasswordSerializer',
+#     'RESET_PASSWORD_EMAIL_SUBJECT': 'Reset Password',
+#     'RESET_PASSWORD_EMAIL_TEMPLATE': '',
+#     'RESET_PASSWORD_CONFIRM_TEMPLATE': '',
+#     'RESET_PASSWORD_SUCCESS_TEMPLATE': '',
+#
+#     # Social register/login
+#     'FACEBOOK_LOGIN_ENABLED': False,
+#     'GOOGLE_LOGIN_ENABLED': False,
+#
+#     # Set password in the case login by socials
+#     'SET_PASSWORD_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.IsAuthenticated',
+#     ],
+#     'SET_PASSWORD_SERIALIZER': 'drf_registration.api.set_password.SetPasswordSerializer',
+# }
+
+REST_USE_JWT = True
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=180),
@@ -168,7 +285,7 @@ SIMPLE_JWT = {
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'ru'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'Europe/Moscow'
 
@@ -195,3 +312,12 @@ MEDIA_URL = "/media/"  # для построения url
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "myblog.User"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.mail.ru"
+EMAIL_PORT = 465
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
