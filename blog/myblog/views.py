@@ -3,8 +3,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework import status, permissions, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 
 from .permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
 from .serializers import (
     RegistrationSerializer,
     ProfileSerializer,
@@ -12,25 +15,12 @@ from .serializers import (
     TagSerializer,
 )
 
-from .models import Profile, User, Post, Tag
+from .models import Profile, Post, Tag
 from django.contrib.auth import login, logout
+from django.contrib.auth.models import User
 
-
-
-# class UserFavoriteDetail(generics.RetrieveAPIView):
-#     queryset = Favorite.objects.all()
-#     serializer_class = FavoritesSerializer
-#     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
-#                           IsOwnerOrReadOnly]
-#
-#
-# class FavoritesList(generics.ListAPIView):
-#     queryset = Favorite.objects.all()
-#     serializer_class = FavoritesSerializer
-#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-#
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
+# from djoser.views import UserViewSet
+from rest_framework.response import Response
 
 
 class PostFavoriteView(APIView):
@@ -55,13 +45,13 @@ class PostFavoriteView(APIView):
 class TagDetailList(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly, IsAuthenticatedOrReadOnly]
 
 
 class TagList(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save()
@@ -79,15 +69,13 @@ class PostList(generics.ListCreateAPIView):
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
-                          IsOwnerOrReadOnly, IsAdminOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
 
 
 class UserProfileDetail(generics.RetrieveUpdateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
-                          IsOwnerOrReadOnly, IsAdminOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
 
 
 class UserList(generics.ListAPIView): # список пользователей (только для чтения)

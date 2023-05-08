@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'myblog.apps.MyblogConfig',
     'rest_framework',
-    'rest_framework.authtoken',
+    #'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'djoser',
 ]
@@ -122,7 +122,7 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        #'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
@@ -130,6 +130,7 @@ REST_FRAMEWORK = {
 
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ]
 }
 
@@ -138,148 +139,19 @@ DJOSER = {
     'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'auth/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'USERNAME_RESET_CONFIRM_RETYPE': True,
+    'TOKEN_MODEL': None,
     'SERIALIZERS': {},
 }
 
-# REST_REGISTRATION = {
-#     #'REGISTER_VERIFICATION_URL': 'https://frontend-host/verify-user/',
-#     #'RESET_PASSWORD_VERIFICATION_URL': 'https://frontend-host/reset-password/',
-#     #'REGISTER_EMAIL_VERIFICATION_URL': 'https://frontend-host/verify-email/',
-#
-#     'VERIFICATION_FROM_EMAIL': 'blogmail@gmail.com',
-# }
-#
-# DRF_REGISTRATION = {
-#
-#     # General settings
-#     'PROJECT_NAME': 'DRF Registration',
-#     'PROJECT_BASE_URL': '',
-#
-#     # User fields to register and response to profile
-#     'USER_FIELDS': (
-#         'id',
-#         'username',
-#         'gender',
-#         'email',
-#         'password',
-#         'is_active',
-#     ),
-#     'USER_READ_ONLY_FIELDS': (
-#         'is_superuser',
-#         'is_staff',
-#         'is_active',
-#     ),
-#     'USER_WRITE_ONLY_FIELDS': (
-#         'username',
-#         'password',
-#     ),
-#
-#     'USER_SERIALIZER': 'drf_registration.api.user.UserSerializer',
-#
-#     # User verify field
-#     'USER_VERIFY_FIELD': 'is_active',
-#
-#     # Activate user by token sent to email
-#     'USER_ACTIVATE_TOKEN_ENABLED': True,
-#     'USER_ACTIVATE_SUCCESS_TEMPLATE': '',
-#     'USER_ACTIVATE_FAILED_TEMPLATE': '',
-#     'USER_ACTIVATE_EMAIL_SUBJECT': 'Activate your account',
-#     'USER_ACTIVATE_EMAIL_TEMPLATE': '',
-#
-#     # Profile
-#     'PROFILE_SERIALIZER': 'drf_registration.api.profile.ProfileSerializer',
-#     'PROFILE_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated',
-#     ],
-#
-#     # Register
-#     'REGISTER_SERIALIZER': 'drf_registration.api.register.RegisterSerializer',
-#     'REGISTER_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.AllowAny',
-#     ],
-#     'REGISTER_SEND_WELCOME_EMAIL_ENABLED': True,
-#         'REGISTER_SEND_WELCOME_EMAIL_SUBJECT': 'Welcome to the B L O G',
-#     'REGISTER_SEND_WELCOME_EMAIL_TEMPLATE': '',
-#
-#     # Login
-#     'LOGIN_SERIALIZER': 'drf_registration.api.login.LoginSerializer',
-#     'LOGIN_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.AllowAny',
-#     ],
-#
-#     # For custom login username fields
-#     'LOGIN_USERNAME_FIELDS': ['username', 'email',],
-#
-#     'LOGOUT_REMOVE_TOKEN': False,
-#
-#     # Change password
-#     'CHANGE_PASSWORD_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated',
-#     ],
-#     'CHANGE_PASSWORD_SERIALIZER': 'drf_registration.api.change_password.ChangePasswordSerializer',
-#
-#     # Reset password
-#     'RESET_PASSWORD_ENABLED': True,
-#     'RESET_PASSWORD_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.AllowAny',
-#     ],
-#     'RESET_PASSWORD_SERIALIZER': 'drf_registration.api.reset_password.ResetPasswordSerializer',
-#     'RESET_PASSWORD_EMAIL_SUBJECT': 'Reset Password',
-#     'RESET_PASSWORD_EMAIL_TEMPLATE': '',
-#     'RESET_PASSWORD_CONFIRM_TEMPLATE': '',
-#     'RESET_PASSWORD_SUCCESS_TEMPLATE': '',
-#
-#     # Social register/login
-#     'FACEBOOK_LOGIN_ENABLED': False,
-#     'GOOGLE_LOGIN_ENABLED': False,
-#
-#     # Set password in the case login by socials
-#     'SET_PASSWORD_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated',
-#     ],
-#     'SET_PASSWORD_SERIALIZER': 'drf_registration.api.set_password.SetPasswordSerializer',
-# }
-
-REST_USE_JWT = True
 
 SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ("Bearer", "JWT"),
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=180),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": False,
-    "UPDATE_LAST_LOGIN": False,
-
-    "ALGORITHM": "HS256",
-    "SIGNING_KEY": SECRET_KEY,
-    "VERIFYING_KEY": "",
-    "AUDIENCE": None,
-    "ISSUER": None,
-    "JSON_ENCODER": None,
-    "JWK_URL": None,
-    "LEEWAY": 0,
-
-    "AUTH_HEADER_TYPES": ("Bearer", "JWT"),
-    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
-    "USER_ID_FIELD": "id",
-    "USER_ID_CLAIM": "user_id",
-    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
 
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    "TOKEN_TYPE_CLAIM": "token_type",
-    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
-
-    "JTI_CLAIM": "jti",
-
-    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
-    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
-    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
-
-    "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
-    "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
-    "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
-    "TOKEN_BLACKLIST_SERIALIZER": "rest_framework_simplejwt.serializers.TokenBlacklistSerializer",
-    "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
-    "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
 # Internationalization
@@ -311,7 +183,7 @@ MEDIA_URL = "/media/"  # для построения url
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = "myblog.User"
+# AUTH_USER_MODEL = "myblog.User"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.mail.ru"

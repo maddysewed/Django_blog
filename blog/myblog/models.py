@@ -1,35 +1,10 @@
 from django.db import models
 import datetime
 from django.urls import reverse
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import UserManager
-
-
-class MyUserManager(UserManager):
-    GENDER = 0
-    GENDER_FEMALE = 1
-    GENDER_MALE = 2
-    GENDER_CHOICES = [(GENDER, 'Gender'), (GENDER_FEMALE, 'Female'), (GENDER_MALE, 'Male')]
-    def genders(self):
-        return self.all().filter(gender=self.GENDER)
-    def males(self):
-        return self.all().filter(gender=self.GENDER_MALE)
-    def females(self):
-        return self.all().filter(gender=self.GENDER_FEMALE)
-
-
-class User(AbstractUser):
-    gender = models.IntegerField(choices=MyUserManager.GENDER_CHOICES, default=0)
-    objects = MyUserManager()
-
-    def __str__(self):
-        return self.email
-
-    def save(self, *args, **kwargs):
-        self.set_password(self.password)
-        super().save(*args, **kwargs)
 
 
 class Profile(models.Model):
@@ -51,7 +26,7 @@ class Profile(models.Model):
 
 
 class Post(models.Model):
-    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name='posts')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     title = models.CharField(max_length=200, db_index=True)
     content = models.TextField(blank=True)  # blank=True  поле не обязательно к заполнению
     date = models.DateTimeField(auto_now_add=True)
